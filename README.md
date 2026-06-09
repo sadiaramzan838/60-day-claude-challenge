@@ -66,6 +66,26 @@ Day 7 – Claude Usage Strategy
 * Learned that providing specific context (e.g., React + Tailwind) improves AI-generated outputs.
 * Documented the strategy, screenshots, and key takeaways.
 
+Day 8 – Environmental Health Analyzer Dashboard
+
+Built an AI-powered Environmental Health Analyzer dashboard using Claude.
+Explored how AI can generate interactive dashboards from detailed requirements.
+Worked with environmental metrics such as AQI, PM2.5, PM10, and water-quality indicators.
+Analyzed environmental health data through visualizations, rankings, and scorecards.
+Learned how dashboards combine data analysis, UX design, and frontend development.
+Tested interactive filters, charts, city comparisons, and health insights.
+Documented screenshots, generated outputs, and key learnings.
+
+Day 9 – NutriScope AI Application Development
+
+Built the NutriScope application using Claude AI.
+Generated an MVP (Minimum Viable Product) version from an initial prompt.
+Created a downloadable HTML application.
+Enhanced the application using a second prompt with additional features and improvements.
+Compared both versions to evaluate differences in functionality, design, and user experience.
+Observed how iterative prompting can significantly improve application quality.
+Learned how AI can assist in rapid prototyping and frontend application development.
+Documented screenshots, HTML files, comparison notes, and key learnings.
 
 Key Learnings
 
