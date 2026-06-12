@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sadia Ramzan — Job Search Toolkit</title>
+<style>
+  :root {
+    --primary: #533AB7;
+    --primary-light: #EEEDFE;
+    --accent: #1D9E75;
+    --accent-light: #E1F5EE;
+    --warn: #BA7517;
+    --warn-light: #FAEEDA;
+    --danger: #A32D2D;
+    --danger-light: #FCEBEB;
+    --success: #3B6D11;
+    --success-light: #EAF3DE;
+    --text: #2C2C2A;
+    --text-muted: #5F5E5A;
+    --text-hint: #888780;
+    --bg: #ffffff;
+    --bg-secondary: #F1EFE8;
+    --border: rgba(0,0,0,0.12);
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.65;
+    padding: 0;
+  }
+
+  /* ── HEADER ── */
+  .hero {
+    background: var(--primary);
+    color: #fff;
+    padding: 2.5rem 2rem 2rem;
+  }
+  .hero-top { display: flex; align-items: center; gap: 1.25rem; margin-bottom: 1.25rem; }
+  .avatar {
+    width: 60px; height: 60px; border-radius: 50%;
+    background: #AFA9EC;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 600; color: #26215C; flex-shrink: 0;
+  }
+  .hero h1 { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.02em; }
+  .hero p { font-size: 0.9rem; opacity: 0.8; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag {
+    background: rgba(255,255,255,0.15);
+    border: 1px solid rgba(255,255,255,0.25);
+    color: #fff;
+    font-size: 0.75rem;
+    padding: 3px 10px;
+    border-radius: 20px;
+  }
+
+  /* ── NAV ── */
+  .nav-bar {
+    display: flex; gap: 0; overflow-x: auto;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .nav-btn {
+    flex-shrink: 0;
+    padding: 0.75rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    background: none; border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { color: var(--primary); }
+  .nav-btn.active { color: var(--primary); border-bottom-color: var(--primary); }
+
+  /* ── SECTIONS ── */
+  .sections { padding: 0 1.5rem 3rem; }
+  .section { display: none; padding-top: 2rem; }
+  .section.active { display: block; }
+  .section-label {
+    display: inline-block;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--primary);
+    background: var(--primary-light);
+    padding: 2px 10px;
+    border-radius: 20px;
+    margin-bottom: 0.6rem;
+  }
+  .section h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 1.25rem;
+    letter-spacing: -0.01em;
+  }
+
+  /* ── DOCUMENT CARD ── */
+  .doc-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  .doc-card p, .doc-card li { font-size: 0.9rem; color: var(--text); line-height: 1.75; }
+  .doc-card p + p { margin-top: 0.9rem; }
+  .doc-meta {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-hint);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .copy-btn {
+    position: absolute; top: 1rem; right: 1rem;
+    background: var(--primary-light);
+    color: var(--primary);
+    border: none;
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .copy-btn:hover { background: #CECBF6; }
+  .copied { background: var(--accent-light) !important; color: var(--accent) !important; }
+
+  /* ── LIST CARD ── */
+  .list-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 1rem;
+  }
+  .list-item {
+    display: flex; align-items: flex-start; gap: 1rem;
+    padding: 0.9rem 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .list-item:last-child { border-bottom: none; }
+  .list-num {
+    width: 24px; height: 24px;
+    background: var(--primary-light);
+    color: var(--primary);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.7rem; font-weight: 700;
+    flex-shrink: 0; margin-top: 1px;
+  }
+  .list-title { font-size: 0.88rem; font-weight: 600; color: var(--text); }
+  .list-sub { font-size: 0.8rem; color: var(--text-muted); margin-top: 2px; }
+
+  /* ── SKILL GRID ── */
+  .skill-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  .skill-card {
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    padding: 0.9rem 1rem;
+  }
+  .skill-name { font-size: 0.85rem; font-weight: 600; color: var(--text); }
+  .skill-bar-bg {
+    margin-top: 6px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .skill-bar-fill { height: 100%; border-radius: 2px; background: var(--primary); }
+
+  /* ── GAP TABLE ── */
+  .gap-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  @media (max-width: 680px) { .gap-grid { grid-template-columns: 1fr; } }
+  .gap-col {
+    border-radius: var(--radius);
+    padding: 1rem;
+    border: 1px solid var(--border);
+  }
+  .gap-col h3 {
+    font-size: 0.78rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 0.75rem;
+  }
+  .gap-col ul { list-style: none; }
+  .gap-col li {
+    font-size: 0.82rem;
+    padding: 4px 0;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+    color: var(--text);
+  }
+  .gap-col li:last-child { border-bottom: none; }
+  .gap-col li::before { margin-right: 6px; }
+  .col-green { background: var(--success-light); }
+  .col-green h3 { color: var(--success); }
+  .col-green li::before { content: "✓"; color: var(--success); }
+  .col-warn { background: var(--warn-light); }
+  .col-warn h3 { color: var(--warn); }
+  .col-warn li::before { content: "△"; color: var(--warn); }
+  .col-blue { background: var(--primary-light); }
+  .col-blue h3 { color: var(--primary); }
+  .col-blue li::before { content: "→"; color: var(--primary); }
+
+  /* ── BRAND CARD ── */
+  .brand-section { display: grid; gap: 1rem; }
+  .brand-card {
+    border-radius: var(--radius);
+    padding: 1.25rem;
+    border-left: 4px solid;
+  }
+  .brand-card.uvp { border-color: var(--primary); background: var(--primary-light); }
+  .brand-card.pos { border-color: var(--accent); background: var(--accent-light); }
+  .brand-card.headline { border-color: var(--warn); background: var(--warn-light); }
+  .brand-card h3 { font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 0.5rem; }
+  .brand-card.uvp h3 { color: var(--primary); }
+  .brand-card.pos h3 { color: var(--accent); }
+  .brand-card.headline h3 { color: var(--warn); }
+  .brand-card p { font-size: 0.9rem; color: var(--text); line-height: 1.6; }
+
+  /* ── INTERVIEW CARD ── */
+  .interview-block { margin-bottom: 1.5rem; }
+  .interview-block h3 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--primary);
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--primary-light);
+  }
+  .interview-block ul { list-style: none; }
+  .interview-block li {
+    font-size: 0.88rem;
+    color: var(--text);
+    padding: 0.45rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+  }
+  .interview-block li:last-child { border-bottom: none; }
+  .interview-block li::before {
+    content: "›";
+    position: absolute; left: 0;
+    color: var(--primary);
+    font-weight: 700;
+  }
+
+  /* ── INTRO ── */
+  .pitch-card {
+    background: linear-gradient(135deg, var(--primary-light) 0%, #fff 100%);
+    border: 1px solid #CECBF6;
+    border-radius: var(--radius);
+    padding: 1.75rem;
+    position: relative;
+  }
+  .pitch-card .quote-mark {
+    position: absolute; top: 1rem; left: 1.25rem;
+    font-size: 3.5rem; color: #CECBF6; font-family: Georgia, serif;
+    line-height: 1;
+  }
+  .pitch-card p {
+    font-size: 0.95rem;
+    color: var(--text);
+    line-height: 1.8;
+    margin-top: 1.5rem;
+    font-style: italic;
+  }
+  .pitch-timer {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-hint);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .timer-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+
+  /* footer/watermark */
+  .wm { text-align: center; font-size: 0.75rem; color: var(--text-hint); margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--border); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-top">
+    <div class="avatar">SR</div>
+    <div>
+      <h1>Sadia Ramzan — Job Search Toolkit</h1>
+      <p>Targeting: Full Stack Engineer (Node + React) · Creative Chaos</p>
+    </div>
+  </div>
+  <div class="tags">
+    <span class="tag">React.js</span>
+    <span class="tag">JavaScript ES6+</span>
+    <span class="tag">Tailwind CSS</span>
+    <span class="tag">REST APIs</span>
+    <span class="tag">5× Internships</span>
+    <span class="tag">BZU · CGPA 3.67</span>
+    <span class="tag">Fiverr Freelancer</span>
+  </div>
+</div>
+
+<nav class="nav-bar" id="nav">
+  <button class="nav-btn active" onclick="show('cover-letter',this)">Cover Letter</button>
+  <button class="nav-btn" onclick="show('recruiter',this)">Recruiter Email</button>
+  <button class="nav-btn" onclick="show('hiring',this)">Hiring Mgr Email</button>
+  <button class="nav-btn" onclick="show('linkedin',this)">LinkedIn</button>
+  <button class="nav-btn" onclick="show('referral',this)">Referral</button>
+  <button class="nav-btn" onclick="show('followup',this)">Follow-Up</button>
+  <button class="nav-btn" onclick="show('intro',this)">30-sec Pitch</button>
+  <button class="nav-btn" onclick="show('jobtitles',this)">Job Titles</button>
+  <button class="nav-btn" onclick="show('strengths',this)">Strengths</button>
+  <button class="nav-btn" onclick="show('gaps',this)">Skill Gaps</button>
+  <button class="nav-btn" onclick="show('brand',this)">Personal Brand</button>
+  <button class="nav-btn" onclick="show('interview',this)">Interview Prep</button>
+</nav>
+
+<div class="sections">
+
+  <!-- S1: COVER LETTER -->
+  <div class="section active" id="cover-letter">
+    <div class="section-label">Section 01</div>
+    <h2>ATS-Friendly Cover Letter</h2>
+    <div class="doc-card">
+      <button class="copy-btn" onclick="copySection('cl-body',this)">Copy</button>
+      <div class="doc-meta">350–420 Words · Tailored for Creative Chaos</div>
+      <div id="cl-body">
+        <p>Hiring Team<br>Creative Chaos<br>Lahore / Remote, Pakistan</p>
+        <p>Dear Hiring Team,</p>
+        <p>I am applying for the Full Stack Software Engineer (Node + React) position at Creative Chaos. With five completed remote frontend internships, a 3.67 CGPA in Computer Science at Bahauddin Zakariya University, and a consistent record of delivering production-ready React applications, I am confident I can contribute meaningfully to your engineering team from day one.</p>
+        <p>Across my internships at Syntecx Hub, Apexify Technologies, Developershub Corporation, SoftGrow Tech, and WebDev Masters, I built and shipped responsive, component-driven interfaces using React.js, JavaScript (ES6+), Tailwind CSS, and REST APIs. I translated Figma mockups into pixel-perfect, cross-browser-compatible components — repeatedly achieving zero design revisions — and delivered admin dashboards with scalable architecture. These experiences gave me direct practice in the React, Redux/Context, and REST API integration skills your role requires.</p>
+        <p>My projects further demonstrate full-cycle frontend capability. BuyNest, my eCommerce application, features a complete cart flow, REST API integration, and a clean, mobile-first component architecture. My real-time Weather Dashboard consumes a public API with performance-optimized data handling. Each project is publicly live on GitHub and my portfolio, reflecting the code quality standards Creative Chaos expects.</p>
+        <p>I am currently deepening my backend knowledge through active study of Node.js, Express, and database design (MySQL/PostgreSQL/MongoDB) — skills I plan to contribute to as I grow into the full-stack scope of this role. My academic foundation in CS fundamentals, combined with hands-on internship experience, positions me well for mentorship from your senior engineers and rapid ramp-up.</p>
+        <p>I am a reliable, remote-first collaborator. Managing five internships concurrently with a full-time degree required the discipline, written communication, and time management your JD explicitly values. I bring that same work ethic to Creative Chaos.</p>
+        <p>I would welcome the opportunity to discuss how my skills align with your team's current projects. Thank you for your time and consideration.</p>
+        <p>Sincerely,<br><strong>Sadia Ramzan</strong><br>03250790381 · sadiaramzan180@gmail.com<br>sadiaramzan-portfolio.netlify.app · github.com/sadiaramzan838</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S2: RECRUITER EMAIL -->
+  <div class="section" id="recruiter">
+    <div class="section-label">Section 02</div>
+    <h2>Recruiter Outreach Email</h2>
+    <div class="doc-card">
+      <button class="copy-btn" onclick="copySection('re-body',this)">Copy</button>
+      <div class="doc-meta">Cold Outreach · LinkedIn / Email</div>
+      <div id="re-body">
+        <p><strong>Subject:</strong> React Frontend Developer — 5 Internships, 3.67 GPA, Open to Full Stack Role</p>
+        <p>Hi [Recruiter's Name],</p>
+        <p>I came across the Full Stack Engineer (Node + React) opening at Creative Chaos and wanted to reach out directly.</p>
+        <p>I'm Sadia Ramzan, a frontend developer and final-year BSCS student at BZU with five verified remote internships in React.js, Tailwind CSS, and REST API integration. I've shipped eCommerce apps, admin dashboards, and Figma-to-code interfaces with zero design revision feedback — and I'm actively expanding into Node.js and backend development.</p>
+        <p>My portfolio and GitHub are live: sadiaramzan-portfolio.netlify.app | github.com/sadiaramzan838</p>
+        <p>I'd love five minutes to discuss whether my profile is a fit. Happy to share my resume or answer any screening questions at your convenience.</p>
+        <p>Best regards,<br><strong>Sadia Ramzan</strong><br>03250790381 · sadiaramzan180@gmail.com</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S3: HIRING MANAGER EMAIL -->
+  <div class="section" id="hiring">
+    <div class="section-label">Section 03</div>
+    <h2>Hiring Manager Email</h2>
+    <div class="doc-card">
+      <button class="copy-btn" onclick="copySection('hm-body',this)">Copy</button>
+      <div class="doc-meta">Direct Outreach · Value-Led</div>
+      <div id="hm-body">
+        <p><strong>Subject:</strong> Full Stack Engineer Application — React/JS Developer with 5 Internships & Live Portfolio</p>
+        <p>Hi [Manager's Name],</p>
+        <p>I'm applying for the Full Stack Software Engineer role at Creative Chaos, and I wanted to write directly rather than disappear into an applicant queue.</p>
+        <p>I'm a frontend developer with hands-on React.js and JavaScript experience across five remote internships. I've built scalable component systems, integrated REST APIs, and delivered pixel-perfect Figma-to-code conversions — the kind of frontend craft your team relies on. I'm now building toward full stack capability with Node.js, Express, and database work, and I'm eager to be mentored and pushed by a senior engineering team like yours.</p>
+        <p>What separates my profile: I've managed professional internship deliverables simultaneously with a full-time BSCS degree (3.67 CGPA), which says a lot about how I handle workload, deadlines, and remote accountability.</p>
+        <p>Live portfolio: sadiaramzan-portfolio.netlify.app<br>GitHub: github.com/sadiaramzan838</p>
+        <p>I'd appreciate 15 minutes of your time to show you what I've built and how I'd contribute to your team. Please let me know if that works.</p>
+        <p>Thank you,<br><strong>Sadia Ramzan</strong><br>03250790381 · sadiaramzan180@gmail.com</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S4: LINKEDIN -->
+  <div class="section" id="linkedin">
+    <div class="section-label">Section 04</div>
+    <h2>LinkedIn Connection Requests</h2>
+    <div class="doc-card" style="margin-bottom:0.75rem;">
+      <button class="copy-btn" onclick="copySection('li-1',this)">Copy</button>
+      <div class="doc-meta">To Recruiter · Max 300 Characters</div>
+      <div id="li-1">
+        <p>Hi [Name], I'm a React.js developer with 5 remote internships applying to Creative Chaos's Full Stack role. I'd love to connect and learn more about the team. Portfolio: sadiaramzan-portfolio.netlify.app</p>
+      </div>
+    </div>
+    <div class="doc-card">
+      <button class="copy-btn" onclick="copySection('li-2',this)">Copy</button>
+      <div class="doc-meta">To Hiring Manager · Max 300 Characters</div>
+      <div id="li-2">
+        <p>Hi [Name], I applied for the Full Stack Engineer role at Creative Chaos. I'm a frontend dev with 5 internships in React & REST APIs, expanding into Node.js. Would love to connect and hear about the team!</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S5: REFERRAL -->
+  <div class="section" id="referral">
+    <div class="section-label">Section 05</div>
+    <h2>Referral Request Message</h2>
+    <div class="doc-card">
+      <button class="copy-btn" onclick="copySection('ref-body',this)">Copy</button>
+      <div class="doc-meta">WhatsApp / LinkedIn / Email</div>
+      <div id="ref-body">
+        <p>Hi [Name],</p>
+        <p>Hope you're doing well! I wanted to ask a quick favour — I'm applying for the Full Stack Software Engineer role at Creative Chaos and noticed you're connected to someone on their team.</p>
+        <p>If you're comfortable, a referral or even a short introduction would mean a lot. I'm a frontend developer with five completed remote internships in React.js and REST API work, and I'm actively learning Node.js to step into the full stack. My CGPA is 3.67 and all my work is live on my portfolio and GitHub.</p>
+        <p>I completely understand if it's not possible — no pressure at all! But if it works, I'd be very grateful.</p>
+        <p>Portfolio: sadiaramzan-portfolio.netlify.app<br>Resume: [attach PDF]</p>
+        <p>Thanks so much,<br>Sadia</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S6: FOLLOW UP -->
+  <div class="section" id="followup">
+    <div class="section-label">Section 06</div>
+    <h2>Follow-Up Email</h2>
+    <div class="doc-card">
+      <button class="copy-btn" onclick="copySection('fu-body',this)">Copy</button>
+      <div class="doc-meta">Send After 5 Business Days · No Response</div>
+      <div id="fu-body">
+        <p><strong>Subject:</strong> Following Up — Full Stack Engineer Application (Sadia Ramzan)</p>
+        <p>Hi [Name],</p>
+        <p>I wanted to follow up on my application for the Full Stack Software Engineer role at Creative Chaos that I submitted on [Date].</p>
+        <p>I remain very interested in the position and believe my five internships in React.js, JavaScript, and REST API development — alongside my growing Node.js and database knowledge — make me a strong candidate to grow into the full stack responsibilities your team needs.</p>
+        <p>If it would help, I'm happy to share specific project examples, answer technical screening questions, or schedule a brief call at your convenience. I want to make evaluating my application as easy as possible for you.</p>
+        <p>Thank you again for considering my profile.</p>
+        <p>Best,<br><strong>Sadia Ramzan</strong><br>03250790381 · sadiaramzan180@gmail.com<br>sadiaramzan-portfolio.netlify.app</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S7: 30-SEC INTRO -->
+  <div class="section" id="intro">
+    <div class="section-label">Section 07</div>
+    <h2>30-Second Professional Introduction</h2>
+    <div class="pitch-card">
+      <div class="quote-mark">"</div>
+      <button class="copy-btn" onclick="copySection('pitch-body',this)" style="position:absolute;top:1rem;right:1rem;">Copy</button>
+      <div id="pitch-body">
+        <p>I'm Sadia Ramzan, a frontend developer and final-year Computer Science student at Bahauddin Zakariya University in Multan. I have five completed remote internships where I built React.js applications, component libraries, and REST API integrations for clients across different industries. My strongest work is in React, JavaScript, and Tailwind CSS — I specialize in turning Figma designs into production-ready, pixel-perfect interfaces. I'm currently expanding into full stack development with Node.js and database design, and I'm looking to join a team where I can ship real product, be mentored by senior engineers, and grow fast. My portfolio is live at sadiaramzan-portfolio.netlify.app — I'd love to walk you through it.</p>
+      </div>
+      <div class="pitch-timer">
+        <div class="timer-dot"></div>
+        ~28 seconds at natural speaking pace
+      </div>
+    </div>
+  </div>
+
+  <!-- S8: JOB TITLES -->
+  <div class="section" id="jobtitles">
+    <div class="section-label">Section 08</div>
+    <h2>Top 10 Job Titles Best Suited for Your Profile</h2>
+    <div class="list-card">
+      <div class="list-item">
+        <div class="list-num">1</div>
+        <div><div class="list-title">Junior Frontend Developer</div><div class="list-sub">Direct match — React, JS, Tailwind, APIs. Your core role.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">2</div>
+        <div><div class="list-title">React Developer (Associate)</div><div class="list-sub">Narrower scope, higher demand. Strong fit given 5 internships.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">3</div>
+        <div><div class="list-title">UI Engineer</div><div class="list-sub">Figma-to-code + component architecture — exactly your skill set.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">4</div>
+        <div><div class="list-title">Full Stack Engineer (Trainee / Junior)</div><div class="list-sub">Creative Chaos role — viable with Node.js learning in progress.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">5</div>
+        <div><div class="list-title">Web Developer (Remote)</div><div class="list-sub">Broad scope, high volume openings. Good for volume applications.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">6</div>
+        <div><div class="list-title">Software Engineer I — Frontend</div><div class="list-sub">Enterprise title for your experience level at larger tech companies.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">7</div>
+        <div><div class="list-title">Frontend Intern → Full-Time Conversion</div><div class="list-sub">Internship-to-hire pipeline at companies like Systems Ltd, Arbisoft, 10Pearls.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">8</div>
+        <div><div class="list-title">Freelance React Developer (Fiverr / Upwork)</div><div class="list-sub">Already active. Scale with Next.js + TypeScript for higher-value gigs.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">9</div>
+        <div><div class="list-title">JavaScript Developer</div><div class="list-sub">Language-first title — good for companies not specifying a framework.</div></div>
+      </div>
+      <div class="list-item">
+        <div class="list-num">10</div>
+        <div><div class="list-title">Associate Software Engineer</div><div class="list-sub">Pakistani market standard for fresh grads with internship experience.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- S9: STRENGTHS -->
+  <div class="section" id="strengths">
+    <div class="section-label">Section 09</div>
+    <h2>Key Strengths Recruiters Will Notice</h2>
+    <div class="skill-grid">
+      <div class="skill-card">
+        <div class="skill-name">React.js Component Architecture</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">Figma → Production Code</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:95%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">Tailwind CSS / Responsive Design</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">REST API Integration</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">Remote Work Discipline</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:95%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">Git / Version Control</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:80%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">JavaScript (ES6+)</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:85%"></div></div>
+      </div>
+      <div class="skill-card">
+        <div class="skill-name">Portfolio & Project Delivery</div>
+        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width:90%"></div></div>
+      </div>
+    </div>
+    <div class="doc-card">
+      <div class="doc-meta">Why Recruiters Will Shortlist You</div>
+      <p><strong>Volume of internships:</strong> 5 remote internships as a student is rare and signals professional seriousness and strong time management — recruiters notice this immediately.</p>
+      <p style="margin-top:0.75rem;"><strong>Zero design revision track record:</strong> A concrete, outcome-based claim that most junior developers cannot make. Leads well in interviews.</p>
+      <p style="margin-top:0.75rem;"><strong>Live portfolio + GitHub:</strong> Recruiters can verify your work immediately. Many candidates claim skills they can't show — you can.</p>
+      <p style="margin-top:0.75rem;"><strong>3.67 CGPA:</strong> Above the typical 3.5 screening threshold used by Pakistani tech companies and signals academic credibility alongside practical work.</p>
+    </div>
+  </div>
+
+  <!-- S10: GAPS -->
+  <div class="section" id="gaps">
+    <div class="section-label">Section 10</div>
+    <h2>Skill Gap Analysis</h2>
+    <div class="gap-grid">
+      <div class="gap-col col-green">
+        <h3>Current Strengths</h3>
+        <ul>
+          <li>React.js (component design)</li>
+          <li>JavaScript ES6+</li>
+          <li>Tailwind CSS</li>
+          <li>Figma-to-code</li>
+          <li>REST APIs (client-side)</li>
+          <li>Responsive design</li>
+          <li>Git / GitHub</li>
+          <li>Remote collaboration</li>
+          <li>TypeScript (learning)</li>
+          <li>Next.js 14 (learning)</li>
+        </ul>
+      </div>
+      <div class="gap-col col-warn">
+        <h3>Missing / Weak for Role</h3>
+        <ul>
+          <li>Node.js (Express, NestJS)</li>
+          <li>REST API authoring (server)</li>
+          <li>Database design (SQL/NoSQL)</li>
+          <li>Auth & security (JWT, OAuth)</li>
+          <li>Unit testing (Jest/Vitest)</li>
+          <li>State management (Redux)</li>
+          <li>JIRA / agile tooling</li>
+          <li>Team leadership basics</li>
+          <li>System design concepts</li>
+          <li>CI/CD fundamentals</li>
+        </ul>
+      </div>
+      <div class="gap-col col-blue">
+        <h3>Learning Roadmap</h3>
+        <ul>
+          <li>Weeks 1–2: Node.js + Express APIs</li>
+          <li>Weeks 3–4: MongoDB + Mongoose</li>
+          <li>Weeks 5–6: JWT auth + REST best practices</li>
+          <li>Weeks 7–8: Redux Toolkit + RTK Query</li>
+          <li>Weeks 9–10: Jest unit testing (90% coverage)</li>
+          <li>Weeks 11–12: JIRA / agile workflow</li>
+          <li>Month 4: NestJS basics + PostgreSQL</li>
+          <li>Month 5: Build 1 full-stack project</li>
+          <li>Ongoing: TypeScript + Next.js 14 depth</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- S11: BRAND -->
+  <div class="section" id="brand">
+    <div class="section-label">Section 11</div>
+    <h2>Personal Brand Summary</h2>
+    <div class="brand-section">
+      <div class="brand-card uvp">
+        <h3>Unique Value Proposition</h3>
+        <p>A rare combination of 5 verifiable remote internships, pixel-perfect Figma-to-React delivery, and a CS academic foundation — all achieved simultaneously, from Multan, before graduating. Not just a student who learned to code: a developer with a professional track record who happens to still be in university.</p>
+      </div>
+      <div class="brand-card pos">
+        <h3>Professional Positioning Statement</h3>
+        <p>Frontend developer specializing in React.js component architecture and design-to-code workflows, with 5 remote internships and a growing full-stack foundation in Node.js and database design. Targeting product companies and engineering teams where design quality and frontend performance are taken seriously.</p>
+      </div>
+      <div class="brand-card headline">
+        <h3>Recruiter Headline (LinkedIn / Resume)</h3>
+        <p>Frontend Developer · React.js | JavaScript | Tailwind CSS · 5 Remote Internships · BSCS @ BZU · Learning Node.js & Next.js 14</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- S12: INTERVIEW -->
+  <div class="section" id="interview">
+    <div class="section-label">Section 12</div>
+    <h2>Interview Talking Points</h2>
+
+    <div class="interview-block">
+      <h3>Most Impressive Achievements to Lead With</h3>
+      <ul>
+        <li>Completed 5 remote frontend internships as a full-time CS student — without dropping below 3.67 CGPA. Quantify the discipline this required.</li>
+        <li>Consistent "zero design revision" delivery across multiple clients for Figma-to-React conversions — show screenshots from your portfolio.</li>
+        <li>Built BuyNest (eCommerce app) with full cart flow + REST API — end-to-end feature ownership as a junior developer.</li>
+        <li>Active Fiverr freelancer (sadiadev05) — demonstrates real-world client communication, scoping, and delivery under commercial pressure.</li>
+      </ul>
+    </div>
+
+    <div class="interview-block">
+      <h3>Key Stories to Prepare (STAR Format)</h3>
+      <ul>
+        <li><strong>Story 1 — Design Accuracy:</strong> "At Apexify / Developershub, I was given a complex Figma mockup and had to replicate it in React + Tailwind. The result was accepted without revisions. Here's how I approached spacing, component decomposition, and responsiveness..."</li>
+        <li><strong>Story 2 — Remote Reliability:</strong> "While managing 5 internships and a full-time degree, I delivered all tasks on time by using [system/approach]. This is how I'd approach deadlines at Creative Chaos..."</li>
+        <li><strong>Story 3 — Learning Quickly:</strong> "When I joined [internship X], I hadn't worked with [specific tool]. I got up to speed by [method] and was contributing meaningfully within [timeframe]..."</li>
+        <li><strong>Story 4 — Real Project:</strong> Walk through BuyNest or the Weather Dashboard — architecture decisions, challenges, how you integrated the API, and what you'd improve today.</li>
+      </ul>
+    </div>
+
+    <div class="interview-block">
+      <h3>Areas Recruiters Will Likely Ask About</h3>
+      <ul>
+        <li>Gap between "frontend experience" and "full stack role" — be ready to address Node.js learning progress honestly and confidently.</li>
+        <li>Internship depth: "Were these real companies? What did you actually build?" — have project links and screenshots ready.</li>
+        <li>React state management: Expect questions on useState, useContext, Redux patterns, and when to use which.</li>
+        <li>Testing: "What testing have you done?" — honest answer: unit testing is in learning phase; be specific about what you're learning.</li>
+        <li>Why Creative Chaos specifically? — research their portfolio, clients, and tech stack before the interview.</li>
+        <li>Where do you see yourself in 2–3 years? — frame around full stack growth and eventually mentoring others.</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+
+<div class="wm" style="margin: 0 1.5rem 2rem;">
+  Generated for Sadia Ramzan · Creative Chaos Full Stack Engineer Application · 2026
+</div>
+
+<script>
+function show(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function copySection(id, btn) {
+  const el = document.getElementById(id);
+  const text = el.innerText;
+  navigator.clipboard.writeText(text).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+</script>
+</body>
+</html>
